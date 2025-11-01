@@ -2,11 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-// Set axios base URL globally
-if (import.meta.env.VITE_API_URL) {
-  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
-}
-
 const AuthContext = createContext();
 
 export const useAuth = () => {
