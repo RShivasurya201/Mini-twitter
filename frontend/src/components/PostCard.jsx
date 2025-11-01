@@ -6,17 +6,26 @@ const PostCard = ({ post, currentUser, onLike, onComment }) => {
   const [showComments, setShowComments] = useState(false);
   const navigate = useNavigate();
 
-  const isLiked = post.likes?.some(like => like.user?._id === currentUser._id || like.user === currentUser._id);
+  const isLiked = currentUser && post.likes?.some(like => like.user?._id === currentUser._id || like.user === currentUser._id);
   const likeCount = post.likes?.length || 0;
   const commentCount = post.comments?.length || 0;
 
   const handleLike = (e) => {
     e.stopPropagation();
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
     onLike(post._id);
   };
 
   const handleSubmitComment = (e) => {
     e.preventDefault();
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
     if (commentText.trim()) {
       onComment(post._id, commentText);
       setCommentText('');
@@ -129,30 +138,41 @@ const PostCard = ({ post, currentUser, onLike, onComment }) => {
 
         {showComments && (
           <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-            <form onSubmit={handleSubmitComment} style={{ marginBottom: '20px' }}>
-              <div className="flex" style={{ gap: '10px' }}>
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Write a comment..."
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '20px',
-                    fontSize: '14px'
-                  }}
-                />
+            {currentUser ? (
+              <form onSubmit={handleSubmitComment} style={{ marginBottom: '20px' }}>
+                <div className="flex" style={{ gap: '10px' }}>
+                  <input
+                    type="text"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Write a comment..."
+                    style={{
+                      flex: 1,
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '20px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-small"
+                    disabled={!commentText.trim()}
+                  >
+                    Comment
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div style={{ marginBottom: '20px' }}>
                 <button
-                  type="submit"
-                  className="btn btn-primary btn-small"
-                  disabled={!commentText.trim()}
+                  className="btn btn-secondary btn-small"
+                  onClick={() => navigate('/login')}
                 >
-                  Comment
+                  Login to comment
                 </button>
               </div>
-            </form>
+            )}
 
             {post.comments && post.comments.length > 0 ? (
               <div style={{ marginTop: '15px' }}>

@@ -81,29 +81,46 @@ const Feed = () => {
           alignItems: 'center'
         }}>
           <h1 style={{ color: '#1da1f2', margin: 0 }}>Mini Twitter</h1>
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            <button
-              onClick={() => navigate(`/profile/${user._id}`)}
-              className="btn btn-secondary btn-small"
-            >
-              My Profile
-            </button>
-            <button
-              onClick={logout}
-              className="btn btn-danger btn-small"
-            >
-              Logout
-            </button>
-          </div>
+          {user ? (
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <button
+                onClick={() => navigate(`/profile/${user._id}`)}
+                className="btn btn-secondary btn-small"
+              >
+                My Profile
+              </button>
+              <button
+                onClick={logout}
+                className="btn btn-danger btn-small"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button
+                onClick={() => navigate('/login')}
+                className="btn btn-secondary btn-small"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate('/register')}
+                className="btn btn-primary btn-small"
+              >
+                Register
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 
       <div className="main-container">
-        <aside className="sidebar">
+          <aside className="sidebar">
           <div style={{ textAlign: 'center' }}>
             <img
-              src={user.avatar || `https://ui-avatars.com/api/?name=${user.displayName}&background=1da1f2&color=fff&size=128`}
-              alt={user.displayName}
+              src={(user && user.avatar) || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'Guest')}&background=1da1f2&color=fff&size=128`}
+              alt={user?.displayName || 'Guest'}
               style={{
                 width: '80px',
                 height: '80px',
@@ -112,14 +129,14 @@ const Feed = () => {
                 objectFit: 'cover'
               }}
             />
-            <h3>{user.displayName}</h3>
-            <p style={{ color: '#657786', marginTop: '5px' }}>@{user.username}</p>
+            <h3>{user?.displayName || 'Guest'}</h3>
+            <p style={{ color: '#657786', marginTop: '5px' }}>@{user?.username || 'guest'}</p>
           </div>
           
           <div style={{ marginTop: '30px' }}>
             <h4 style={{ marginBottom: '15px' }}>Quick Links</h4>
             <button
-              onClick={() => navigate(`/profile/${user._id}`)}
+              onClick={() => user ? navigate(`/profile/${user._id}`) : navigate('/login')}
               className="btn btn-secondary"
               style={{ width: '100%', marginBottom: '10px' }}
             >
@@ -128,8 +145,8 @@ const Feed = () => {
           </div>
         </aside>
 
-        <main className="content">
-          <CreatePost onPostCreated={handlePostCreated} />
+          <main className="content">
+          {user && <CreatePost onPostCreated={handlePostCreated} />}
           
           <h2 style={{ marginBottom: '20px' }}>Recent Posts</h2>
           

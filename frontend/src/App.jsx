@@ -34,7 +34,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/feed" element={<PrivateRoute><Feed /></PrivateRoute>} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/profile/:userId" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/feed" />} />
         </Routes>
